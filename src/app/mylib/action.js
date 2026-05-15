@@ -8,7 +8,7 @@ import { updateLib } from '@/components/neon';
 
 export async function removeMyLibAction(target) {
   try {
-    const res = await updateLib({ ...target, isBookmarked: !target.isBookmarked });
+    const res = await updateLib({ ...target, isBookmarked: false, personalNote: null });
     revalidatePath("/mylib");
     return { success: true, message: `${res.name} has been removed` };
   } catch (error) {
