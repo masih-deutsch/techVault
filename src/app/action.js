@@ -21,6 +21,7 @@ export async function createLibAction(prev, formData) {
 
     const res = await createLib({ ...payload, isBookmarked: false, personalNote: null });
     revalidatePath("/");
+    revalidatePath("/mylib");
     return { success: true, message: `${res.name} has been successfully created` };
 
   } catch (error) {
@@ -52,6 +53,7 @@ export async function updateLibAction(target, prev, formData) {
       ...payload
     });
     revalidatePath("/");
+    revalidatePath("/mylib");
     return { success: true, message: `${res.name} has been successfully updated` };
 
   } catch (error) {
@@ -64,6 +66,7 @@ export async function removeLibAction(id, prev, formData) {
   try {
     const res = await removeLib(id);
     revalidatePath("/");
+    revalidatePath("/mylib");
     return { success: true, message: `${res.name} has been removed` };
   } catch (error) {
     return { success: false, message: error.message };
@@ -76,6 +79,7 @@ export async function isBookmarkedAction(data) {
     const payload = { ...data, isBookmarked: !data.isBookmarked };
     await updateLib(payload);
     revalidatePath("/");
+    revalidatePath("/mylib");
     return { success: true, message: "Your bookmark has been successfully updated" };
   } catch (error) {
     return { success: false, message: error.message };
