@@ -1,7 +1,7 @@
 "use client";
 import { ChevronDown, Search } from 'lucide-react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
-
+import { useRef } from 'react';
 
 
 export default function FilterBar() {
@@ -10,9 +10,19 @@ export default function FilterBar() {
   const path = usePathname();
   const urlParams = useSearchParams();
 
+  const debounceTimer = useRef(null);
+  const handleSearch = (text) => {
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+    }
+    debounceTimer.current = setTimeout(() => {
+      router.replace(`/?q=${text}`)
+    }, 500);
+  }
+
   const currentSort = urlParams.get("sort") || "asc";
 
-  function handleChange(text) {
+  function handleSort(text) {
 
     const params = new URLSearchParams(urlParams.toString());
     params.set("sort", text);
@@ -28,14 +38,15 @@ export default function FilterBar() {
         <input
           type="text"
           placeholder="e.g., Zustand, Tailwind..."
-          onChange={(e) => router.replace(`/?q=${e.target.value}`)}
+          // onChange={(e) => router.replace(`/?q=${e.target.value}`)}
+          onChange={(e) => handleSearch(e.target.value)}
           className="w-full bg-transparent py-3.5 pl-12 pr-4 text-white placeholder-slate-500 focus:outline-none"
         />
       </div>
 
       <div className="relative flex-2 bg-slate-900/30 transition-colors hover:bg-slate-800">
         <select
-          onChange={(e) => handleChange(e.target.value)}
+          onChange={(e) => handleSort(e.target.value)}
           value={currentSort}
           className="w-full cursor-pointer appearance-none bg-transparent py-3.5 pl-4 pr-10 text-white focus:outline-none">
           <option value="asc">Oldest First</option>
